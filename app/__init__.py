@@ -1,18 +1,17 @@
 from flask import Flask
-
+import os
 from app.webhook.routes import webhook
 
 
-# Creating our flask app
 def create_app():
 
-    app = Flask(__name__)
+    template_dir = os.path.abspath("templates")
+    app = Flask(__name__, template_folder=template_dir)
 
     @app.route("/", methods=["GET"])
     def index():
         return "Welcome to our homepage!"
 
-    # registering all the blueprints
     app.register_blueprint(webhook)
 
     return app

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request, jsonify, render_template
 from ..extensions import client
 
 webhook = Blueprint("Webhook", __name__, url_prefix="/webhook")
@@ -8,6 +8,7 @@ webhook = Blueprint("Webhook", __name__, url_prefix="/webhook")
 def receiver():
     collection = client.db["webhook_store"]
     data = request.get_json()
+
     extracted_data = {
         "request_id": None,
         "author": None,
@@ -40,12 +41,16 @@ def receiver():
             extracted_data["timestamp"] = data["pull_request"]["merged_at"]
 
     collection.insert_one(extracted_data)
-
     return {}, 200
 
 
+@webhook.route("/ui", methods=["GET"])
+def ui():
+    return render_template("webhook.html")
+
+
 @webhook.route("/receiver", methods=["GET"])
-def get_receiver():
+def get_all_data():
     collection = client.db["webhook_store"]
     data = list(collection.find({}, {"_id": 0}))
     return jsonify(data), 200
