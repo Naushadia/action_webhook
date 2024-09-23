@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 from ..extensions import client
 
 webhook = Blueprint("Webhook", __name__, url_prefix="/webhook")
@@ -42,3 +42,10 @@ def receiver():
     collection.insert_one(extracted_data)
 
     return {}, 200
+
+
+@webhook.route("/receiver", methods=["GET"])
+def get_receiver():
+    collection = client.db["webhook_store"]
+    data = list(collection.find({}, {"_id": 0}))
+    return jsonify(data), 200
