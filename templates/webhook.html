@@ -70,7 +70,7 @@
     <script>
         async function fetchWebhookData() {
             try {
-                const response = await fetch('http://localhost:5000/webhook/receiver');
+                const response = await fetch('https://action-webhook.onrender.com/webhook/receiver');
                 const data = await response.json();
 
                 const tableBody = document.querySelector('#webhook-table tbody');
